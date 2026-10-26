@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Ishan! 💖</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #f4eee1;
+      --vintage-red: #a83232;
+      --soft-rose: #d98880;
+      --paper-cream: #faf5ed;
+      --text-dark: #3a322c;
+      --accent-blue: #a3c1ad;
+      --shadow: 0 10px 25px rgba(80, 50, 40, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-cream);
+      background-image: 
+        radial-gradient(#d5cbb8 1px, transparent 0),
+        radial-gradient(#d5cbb8 1px, var(--bg-cream) 0);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-dark);
+      padding: 15px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Music Floating Button */
+    .music-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: var(--paper-cream);
+      border: 2px dashed var(--vintage-red);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    .music-btn:hover { transform: scale(1.1) rotate(10deg); }
+
+    /* Background Doodle Floating Elements */
+    .magic-container {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      top: -20px;
+      font-size: 1.4rem;
+      animation: floatDown linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes floatDown {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(50vh) rotate(180deg); }
+      100% { transform: translateY(105vh) rotate(360deg); }
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 480px;
+      background: var(--paper-cream);
+      border: 2px solid #e0d0b8;
+      border-radius: 20px;
+      padding: 2.2rem 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow), inset 0 0 40px rgba(180, 150, 120, 0.15);
+      position: relative;
+      z-index: 10;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    /* Washi Tape Effect on Tops of Screens */
+    .screen::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 26px;
+      background: rgba(217, 136, 128, 0.5);
+      border-left: 2px dashed rgba(255,255,255,0.7);
+      border-right: 2px dashed rgba(255,255,255,0.7);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      z-index: 15;
+    }
+
+    .screen.active { display: block; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.9) rotate(-1deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    h2 { 
+      font-family: 'Dancing Script', cursive; 
+      font-size: 2.2rem; 
+      color: var(--vintage-red); 
+      margin-bottom: 10px; 
+    }
+    p { font-size: 0.95rem; line-height: 1.6; color: #5a4e44; }
+
+    /* Passcode Screen */
+    .passcode-display {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+
+    .pin-box {
+      width: 48px;
+      height: 48px;
+      border: 2px dashed var(--vintage-red);
+      border-radius: 12px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: var(--vintage-red);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 250px;
+      margin: 0 auto;
+    }
+
+    .key-btn {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 1px solid #d8c2a8;
+      background: #fff;
+      color: var(--vintage-red);
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+      transition: all 0.2s ease;
+      margin: 0 auto;
+    }
+
+    .key-btn:hover { background: #fdf8f0; transform: translateY(-2px); }
+    .key-btn:active { transform: scale(0.92); }
+
+    .hint-text {
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+      color: #8c7b6c;
+      font-style: italic;
+      font-family: 'Caveat', cursive;
+    }
+
+    .nav-btn {
+      margin-top: 1.5rem;
+      background: var(--vintage-red);
+      color: #fff;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 25px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(168, 50, 50, 0.3);
+      transition: all 0.3s;
+    }
+
+    .nav-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(168, 50, 50, 0.4); }
+
+    /* Cake Animation Screen */
+    .cake-container {
+      position: relative;
+      width: 170px;
+      height: 120px;
+      background: #e8c5b0;
+      border-radius: 18px 18px 10px 10px;
+      margin: 40px auto 20px;
+      box-shadow: inset 0 -10px 0 rgba(0,0,0,0.05), 0 8px 20px rgba(0,0,0,0.08);
+      border: 2px solid #d4a890;
+    }
+    
+    .cake-container::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 25px;
+      background: #fffdf9;
+      border-radius: 18px 18px 8px 8px;
+    }
+
+    .candles-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      position: absolute;
+      top: -30px;
+      width: 100%;
+    }
+
+    .candle {
+      width: 10px;
+      height: 35px;
+      background: repeating-linear-gradient(45deg, #fff, #fff 5px, var(--soft-rose) 5px, var(--soft-rose) 10px);
+      position: relative;
+      border-radius: 3px;
+    }
+
+    .c-flame {
+      width: 12px;
+      height: 18px;
+      background: #f4b41a;
+      border-radius: 50% 50% 20% 20%;
+      position: absolute;
+      top: -20px;
+      left: -1px;
+      box-shadow: 0 0 10px #f4b41a, 0 0 20px #e67e22;
+      animation: flicker 0.6s infinite alternate;
+    }
+
+    .c-flame.off { opacity: 0; transform: scale(0); transition: 0.3s; }
+
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-2deg); }
+      100% { transform: scale(1.1) rotate(2deg); }
+    }
+
+    /* Gifts Screen */
+    .gifts-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 18px;
+      border: 2px dashed #d8c2a8;
+      margin: 1.2rem 0;
+    }
+
+    .gift-item {
+      font-size: 1.8rem;
+      cursor: pointer;
+      background: #fff;
+      padding: 10px 0;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+      border: 1px solid #ebd2be;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .gift-item:hover { transform: scale(1.1) rotate(4deg); }
+    .gift-item.opened { background: #eaf2ed; cursor: default; transform: none; border-color: #a3c1ad; }
+
+    /* Scrapbook Vintage Letter */
+    .letter-box {
+      background: #fdfaf3;
+      padding: 1.8rem 1.4rem;
+      border-radius: 12px;
+      text-align: left;
+      font-family: 'Caveat', cursive;
+      font-size: 1.35rem;
+      line-height: 1.4;
+      color: #2c2520;
+      border: 1px solid #e2d2bc;
+      max-height: 360px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 20px rgba(180, 150, 120, 0.1);
+      position: relative;
+    }
+
+    .letter-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      color: var(--vintage-red);
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .doodle-stamp {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 10px;
+      background: #f3eae0;
+      border-radius: 10px;
+      border: 1px dashed var(--soft-rose);
+    }
+
+    .penguin-sticker {
+      width: 65px;
+      height: 65px;
+      object-fit: contain;
+    }
+
+    /* Modal Popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(50, 40, 35, 0.5);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal {
+      background: var(--paper-cream);
+      padding: 2rem 1.5rem;
+      border-radius: 20px;
+      max-width: 320px;
+      width: 85%;
+      text-align: center;
+      border: 2px solid #e0d0b8;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      animation: scaleUp 0.3s ease;
+    }
+
+    @keyframes scaleUp {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Audio Button -->
+  <button class="music-btn" id="music-toggle" onclick="toggleAudio()" title="Toggle Background Music">🎵</button>
+
+  <div class="magic-container" id="magic-bg"></div>
+
+  <!-- Screen 1: Passcode -->
+  <div class="screen active" id="screen-1">
+    <h2>Unlock Access 🔒</h2>
+    <p>Enter the secret passcode to unlock your birthday surprise!</p>
+    <div class="passcode-display">
+      <div class="pin-box" id="pin-0"></div>
+      <div class="pin-box" id="pin-1"></div>
+      <div class="pin-box" id="pin-2"></div>
+      <div class="pin-box" id="pin-3"></div>
+    </div>
+    <div class="keypad">
+      <button class="key-btn" onclick="pressKey('1')">1</button>
+      <button class="key-btn" onclick="pressKey('2')">2</button>
+      <button class="key-btn" onclick="pressKey('3')">3</button>
+      <button class="key-btn" onclick="pressKey('4')">4</button>
+      <button class="key-btn" onclick="pressKey('5')">5</button>
+      <button class="key-btn" onclick="pressKey('6')">6</button>
+      <button class="key-btn" onclick="pressKey('7')">7</button>
+      <button class="key-btn" onclick="pressKey('8')">8</button>
+      <button class="key-btn" onclick="pressKey('9')">9</button>
+      <button class="key-btn" onclick="clearPin()">C</button>
+      <button class="key-btn" onclick="pressKey('0')">0</button>
+      <button class="key-btn" onclick="checkPin()">✓</button>
+    </div>
+    <p class="hint-text">Hint: Passcode is 2404 ✨</p>
+  </div>
+
+  <!-- Screen 2: Birthday Greeting -->
+  <div class="screen" id="screen-2">
+    <h2>Happy 21st Birthday! 🎉</h2>
+    <!-- Vintage SVG Penguin Duo -->
+    <div style="margin: 15px auto; width: 140px; height: 100px;">
+      <svg viewBox="0 0 200 120" width="100%" height="100%">
+        <!-- Penguin 1 -->
+        <ellipse cx="60" cy="70" rx="35" ry="40" fill="#3a322c"/>
+        <ellipse cx="60" cy="72" rx="24" ry="30" fill="#ffffff"/>
+        <circle cx="50" cy="58" r="4" fill="#3a322c"/>
+        <circle cx="70" cy="58" r="4" fill="#3a322c"/>
+        <path d="M 55 64 Q 60 70 65 64 Z" fill="#e67e22"/>
+        <!-- Pink Bow -->
+        <path d="M 42 38 Q 35 30 45 30 Q 50 38 45 42 Z" fill="#d98880"/>
+        <path d="M 58 38 Q 65 30 55 30 Q 50 38 55 42 Z" fill="#d98880"/>
+        <circle cx="50" cy="36" r="4" fill="#a83232"/>
+
+        <!-- Penguin 2 -->
+        <ellipse cx="140" cy="70" rx="35" ry="40" fill="#3a322c"/>
+        <ellipse cx="140" cy="72" rx="24" ry="30" fill="#ffffff"/>
+        <circle cx="130" cy="58" r="4" fill="#3a322c"/>
+        <circle cx="150" cy="58" r="4" fill="#3a322c"/>
+        <path d="M 135 64 Q 140 70 145 64 Z" fill="#e67e22"/>
+        <!-- Blue Bow -->
+        <path d="M 122 38 Q 115 30 125 30 Q 130 38 125 42 Z" fill="#a3c1ad"/>
+        <path d="M 138 38 Q 145 30 135 30 Q 130 38 135 42 Z" fill="#a3c1ad"/>
+        <circle cx="130" cy="36" r="4" fill="#5b8266"/>
+
+        <!-- Hearts around -->
+        <path d="M 100 25 Q 100 18 93 18 Q 86 18 86 27 Q 86 36 100 46 Q 114 36 114 27 Q 114 18 107 18 Q 100 18 100 25 Z" fill="#a83232" transform="scale(0.6) translate(65, -10)"/>
+      </svg>
+    </div>
+    <p>To my favorite human, Ishan paglu! May this year bring all your biggest dreams to life. ❤️</p>
+    <button class="nav-btn" onclick="goToScreen(3)">Cut The Cake 🎂</button>
+  </div>
+
+  <!-- Screen 3: Make a Wish / Cake -->
+  <div class="screen" id="screen-3">
+    <h2 id="cake-title">Make a Wish! 🕯️</h2>
+    <div class="cake-container">
+      <div class="candles-row">
+        <div class="candle"><div class="c-flame" id="flame-1"></div></div>
+        <div class="candle"><div class="c-flame" id="flame-2"></div></div>
+        <div class="candle"><div class="c-flame" id="flame-3"></div></div>
+      </div>
+    </div>
+    <button class="nav-btn" onclick="blowCandles()">Blow Candles 💨</button>
+  </div>
+
+  <!-- Screen 4: 21 Gifts Grid -->
+  <div class="screen" id="screen-4">
+    <h2>21 Special Surprises! 🎁</h2>
+    <p style="font-size:0.85rem; margin-bottom: 5px;">Tap each gift box to open your birthday wishes!</p>
+    <div class="gifts-grid" id="gifts-grid"></div>
+    <button class="nav-btn" onclick="goToScreen(5)">Read Letter 💌</button>
+  </div>
+
+  <!-- Screen 5: Vintage Heartfelt Letter -->
+  <div class="screen" id="screen-5">
+    <h2>A Note From My Heart 💌</h2>
+    <div class="letter-box">
+      <div class="letter-title">Happy Birthday My Favorite Person</div>
+      
+      <p>To my Ishan paglu ❤️,</p><br>
+      <p>Happiest Birthday to you! 🎉🎂 Hehehe... honestly, I don't even know where to begin 🥹.</p><br>
+      <p>On your birthday, I want to shine a light on why today is so special to me: a super amazing person like you was born into this world! You're the cutest, absolute paglu, my human diary, and my very best friend. 🧡🥳 Thank you for being the person that you are. I feel so incredibly grateful to have crossed paths with you, and out of everyone, somehow I got you—that still surprises me in the best possible way. 💫</p><br>
+      <p>I don’t think I say this enough, but I feel so lucky to have you in my life. You know me the best, you keep my deepest secrets safe, and you always make sure to cheer me up on my darkest days. 🥺 The way you care, the way you listen, and the way you stay mean more to me than I can ever properly explain. You accept me with all my flaws and make me feel good about myself even when I feel down. 🫂💖</p><br>
+      <p>Being with you just feels right. It’s peaceful, it’s safe, and it makes me genuinely happy in a way that’s hard to put into words. 🥰 I don’t just enjoy talking to you; I truly look forward to it. You’ve become such an essential part of my everyday life, and I honestly don’t know how to navigate life without you. 🕰️✨</p><br>
+      <p>Here’s to all these years, all the smiles, all the tears, and this unbreakable bond we share. We’ve had our ups and downs, but we never gave up on each other. I want to be here with you now, and I want to be here for everything that comes ahead—through all the good days, the bad days, the random moments, and all the growth. 🌱 Having you beside me is something I deeply value, and I am so proud of everything you accomplish! 🤝📈</p><br>
+      
+      <div class="doodle-stamp">
+        <span>🙈❤️</span>
+        <p style="font-size: 1.2rem; margin:0; font-family:'Caveat', cursive;">
+          (Tum bhi thak gaye hoge sun-sun kar ki tum best ho, par kya karu, ho hi itne special! Samajh hi nahi aata aur kya bolu...)
+        </p>
+      </div><br>
+
+      <p>You’re special to me in ways you probably don’t even realize. I hope today makes you feel even a fraction of how much you mean to me, and I hope I get to stay a part of your life for a long, long time. 🤍✨</p><br>
+      <p>Here's to achieving big dreams and accomplishing goals together. Wishing you the happiest birthday once again, my world. I love you forever. ♾️❤️✨</p><br>
+      
+      <p style="text-align: right; font-weight: bold; color: var(--vintage-red);">Love always,<br>Your Bestie ✨</p>
+    </div><br>
+    <button class="nav-btn" onclick="goToScreen(4)">Back to Gifts ↩</button>
+  </div>
+
+  <!-- Popup Wish Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div style="font-size:3rem;" id="m-icon">✨</div>
+      <h3 style="color:var(--vintage-red); font-family:'Dancing Script', cursive; font-size:1.8rem; margin: 8px 0;" id="m-title">Gift Unlocked!</h3>
+      <p style="font-size:0.95rem; color:#5a4e44;" id="m-text">Wish text here</p><br>
+      <button class="nav-btn" style="margin-top:0; padding: 10px 24px;" onclick="closeModal()">Awesome! 💖</button>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      friendName: "Ishan",
+      friendAge: 21,
+      passcode: "2404",
+      wishes: [
+        "May your 21st year be filled with non-stop laughter and success! 🌟",
+        "Wishing you endless peace, joy, and unlimited good vibes! ✨",
+        "May all your wildest dreams take flight this year! 🚀",
+        "Sending you a massive virtual hug on your special day! 🧸",
+        "May your life always be as sweet as birthday cake! 🎂",
+        "Here's to good health, big smiles, and zero stress! 💖",
+        "May every single door of opportunity open for you this year! 🔑",
+        "Wishing you infinite reasons to celebrate every day! 🥳",
+        "Never stop being the awesome, hilarious person you are! 😎",
+        "May luck and prosperity follow you everywhere you go! 🍀",
+        "Treat yourself today—you deserve the absolute best! 👑",
+        "Here's to conquering new heights and hitting all your goals! 🏆",
+        "May your day be filled with warm sunshine and good food! 🍕",
+        "Wishing you unforgettable adventures in your 21st chapter! 🗺️",
+        "May peace and happiness be your constant companions! 🕊️",
+        "Keep shining bright and inspiring everyone around you! 💎",
+        "May all your secret wishes come true when you blow the candles! 🕯️",
+        "Sending you endless positive energy for the year ahead! ⚡",
+        "May your days be light, warm, and full of good music! 🎶",
+        "Cheers to another awesome year of life, health, and joy! 🥂",
+        "Happy 21st Birthday, Ishan! Enjoy your day to the fullest! 🎉"
+      ]
+    };
+
+    let currentPin = "";
+    let openedSet = new Set();
+    let audioCtx = null;
+    let isPlayingAudio = false;
+    let melodyInterval = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.2, gainVal = 0.1) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function playBdayMelody() {
+      if (isPlayingAudio) return;
+      initAudio();
+      isPlayingAudio = true;
+      document.getElementById('music-toggle').innerText = "🎶";
+
+      const notes = [
+        { f: 264, d: 0.3 }, { f: 264, d: 0.3 }, { f: 297, d: 0.6 }, { f: 264, d: 0.6 }, { f: 352, d: 0.6 }, { f: 330, d: 1.0 },
+        { f: 264, d: 0.3 }, { f: 264, d: 0.3 }, { f: 297, d: 0.6 }, { f: 264, d: 0.6 }, { f: 396, d: 0.6 }, { f: 352, d: 1.0 },
+        { f: 264, d: 0.3 }, { f: 264, d: 0.3 }, { f: 528, d: 0.6 }, { f: 440, d: 0.6 }, { f: 352, d: 0.6 }, { f: 330, d: 0.6 }, { f: 297, d: 0.8 }
+      ];
+
+      let noteIdx = 0;
+      melodyInterval = setInterval(() => {
+        if (!isPlayingAudio) return;
+        const note = notes[noteIdx];
+        playTone(note.f, 'triangle', note.d, 0.12);
+        noteIdx = (noteIdx + 1) % notes.length;
+      }, 500);
+    }
+
+    function toggleAudio() {
+      if (isPlayingAudio) {
+        clearInterval(melodyInterval);
+        isPlayingAudio = false;
+        document.getElementById('music-toggle').innerText = "🎵";
+      } else {
+        playBdayMelody();
+      }
+    }
+
+    // Vintage Scrapbook background floating elements
+    const magicContainer = document.getElementById('magic-bg');
+    const symbols = ['🤎', '✨', '🌸', '🎈', '⭐', '🎀'];
+    for (let i = 0; i < 20; i++) {
+      let particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.animationDuration = (5 + Math.random() * 6) + 's';
+      particle.style.animationDelay = Math.random() * 5 + 's';
+      magicContainer.appendChild(particle);
+    }
+
+    // Dynamic Gifts Grid
+    const grid = document.getElementById('gifts-grid');
+    for (let i = 1; i <= CONFIG.friendAge; i++) {
+      let box = document.createElement('div');
+      box.className = 'gift-item';
+      box.id = `gift-${i}`;
+      box.innerText = '🎁';
+      box.onclick = () => openGift(i);
+      grid.appendChild(box);
+    }
+
+    function pressKey(num) {
+      initAudio();
+      playTone(350 + num * 25, 'sine', 0.1, 0.05);
+      if (currentPin.length < 4) {
+        currentPin += num;
+        document.getElementById(`pin-${currentPin.length - 1}`).innerText = "•";
+      }
+    }
+
+    function clearPin() {
+      initAudio();
+      playTone(220, 'square', 0.15, 0.05);
+      currentPin = "";
+      for(let i=0; i<4; i++) document.getElementById(`pin-${i}`).innerText = "";
+    }
+
+    function checkPin() {
+      initAudio();
+      if (currentPin === CONFIG.passcode) {
+        playTone(600, 'sine', 0.2, 0.1);
+        setTimeout(() => playTone(800, 'sine', 0.3, 0.1), 150);
+        confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+        if (!isPlayingAudio) playBdayMelody();
+        // DIRECT TRANSITION TO SCREEN 2
+        setTimeout(() => {
+          goToScreen(2);
+        }, 400);
+      } else {
+        playTone(180, 'sawtooth', 0.3, 0.1);
+        alert(`Passcode galat hai! Hint yaad rakho: ${CONFIG.passcode}`);
+        clearPin();
+      }
+    }
+
+    function goToScreen(num) {
+      initAudio();
+      playTone(500, 'sine', 0.1, 0.05);
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(`screen-${num}`).classList.add('active');
+    }
+
+    function blowCandles() {
+      initAudio();
+      playTone(300, 'sine', 0.4, 0.1);
+      document.querySelectorAll('.c-flame').forEach(f => f.classList.add('off'));
+      document.getElementById('cake-title').innerText = `Happy Birthday ${CONFIG.friendName}! ❤️`;
+      confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
+      
+      // DIRECT TRANSITION TO GIFTS (SCREEN 4)
+      setTimeout(() => {
+        goToScreen(4);
+      }, 1200);
+    }
+
+    function openGift(index) {
+      if (openedSet.has(index)) return;
+      openedSet.add(index);
+
+      initAudio();
+      playTone(523.25, 'sine', 0.15, 0.1);
+      setTimeout(() => playTone(659.25, 'sine', 0.2, 0.1), 100);
+
+      const box = document.getElementById(`gift-${index}`);
+      box.classList.add('opened');
+      box.innerText = '🔓';
+
+      confetti({ particleCount: 40, spread: 60 });
+
+      const wishText = CONFIG.wishes[index - 1] || "Wishing you an amazing year ahead!";
+      document.getElementById('m-title').innerText = `Gift #${index} Unlocked!`;
+      document.getElementById('m-text').innerText = wishText;
+      document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    function closeModal() {
+      initAudio();
+      playTone(400, 'sine', 0.1, 0.05);
+      document.getElementById('modal-overlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
